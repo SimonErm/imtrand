@@ -1,0 +1,11 @@
+[package]
+name = "imtrand"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum = { version = "0.7", features = ["multipart"] }
+tokio={version="1.0", features = ["full"] }
+imageproc="0.25"
+resvg="0.43"
+axum_typed_multipart = "0.12.1"
