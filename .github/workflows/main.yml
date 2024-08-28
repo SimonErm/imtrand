@@ -1,0 +1,22 @@
+name: Build container
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    permissions:
+      packages: write
+    runs-on: ubuntu-latest
+    steps:
+      - id: checkout
+        uses: actions/checkout@v3
+      - id: setup-pack
+        uses: buildpacks/github-actions/setup-pack@v5.0.0
+      - id: build-image
+        run: |
+         pack build https://ghcr.io/SimonErm/imtrand:next --publish -b paketo-community/rust -B paketobuildpacks/builder-jammy-base:latest  
