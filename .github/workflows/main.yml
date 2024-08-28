@@ -19,4 +19,4 @@ jobs:
         uses: buildpacks/github-actions/setup-pack@v5.0.0
       - id: build-image
         run: |
-         pack build SimonErm/imtrand -b paketo-community/rust -B paketobuildpacks/builder-jammy-base:latest  
+         pack build imtrand -b paketo-community/rust -B paketobuildpacks/builder-jammy-base:latest  
