@@ -26,5 +26,5 @@ jobs:
       - id: build-image
         run: |
          pack build imtrand -b paketo-community/rust -B paketobuildpacks/builder-jammy-base:latest
-         docker image tag imtrand ghcr.io/SimonErm/imtrand:next
-         docker image push ghcr.io/SimonErm/imtrand:next
+         docker image tag imtrand ghcr.io/simonerm/imtrand:next
+         docker image push ghcr.io/simonerm/imtrand:next
