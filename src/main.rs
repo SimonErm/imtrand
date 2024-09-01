@@ -169,14 +169,14 @@ async fn create_document(
     payload: TypedMultipart<TransformRequest>,
 ) -> Result<impl IntoResponse, AppError> {
     let base_image = payload.image.borrow();
-    let mut test = ImageReader::new(Cursor::new(payload.image.contents.clone()));
+    let mut image_reader = ImageReader::new(Cursor::new(payload.image.contents.clone()));
     let mimetype = base_image.metadata.content_type.as_ref();
     let unwraped_mimetype = mimetype.ok_or(AppError::MissingMimeType)?;
-    test.set_format(
+    image_reader.set_format(
         ImageFormat::from_mime_type(unwraped_mimetype)
             .ok_or(AppError::InvalidMimeType(unwraped_mimetype.into()))?,
     );
-    let image = test
+    let image = image_reader
         .decode()
         .map_err(|err| AppError::DecodingFailure(err))?;
 
