@@ -859,6 +859,7 @@ dependencies = [
  "axum_typed_multipart",
  "imageproc",
  "resvg",
+ "serde",
  "tokio",
 ]
 
