@@ -10,12 +10,8 @@ updates:
   schedule:
     interval: weekly
   open-pull-requests-limit: 10
-  reviewers:
-    - SimonErm
 - package-ecosystem: "github-actions"
   directory: "/"
   # Check for updates every Monday
   schedule:
     interval: "weekly"
-  reviewers:
-    - SimonErm
