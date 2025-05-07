@@ -8,5 +8,5 @@ axum = { version = "0.7", features = ["multipart"] }
 tokio={version="1.45", features = ["full"] }
 imageproc="0.25"
 resvg="0.45"
-axum_typed_multipart = "0.12.1"
+axum_typed_multipart = "0.16.0"
 serde = { version = "1.0", features = ["derive"] }
