@@ -136,7 +136,7 @@ fn prepare_layers(
             overlay_reader.set_format(ImageFormat::Png);
             let mut overlay_image = overlay_reader
                 .decode()
-                .map_err(|err| AppError::DecodingFailure(err))?;
+                .map_err(AppError::DecodingFailure)?;
             overlay_image = overlay_image.resize(image_witdh, image_height, FilterType::Nearest);
             Ok(overlay_image)
         } else {
@@ -149,7 +149,7 @@ fn prepare_layers(
             );
             let mut overlay_image = overlay_reader
                 .decode()
-                .map_err(|err| AppError::DecodingFailure(err))?;
+                .map_err(AppError::DecodingFailure)?;
             overlay_image = overlay_image.resize(image_witdh, image_height, FilterType::Nearest);
             Ok(overlay_image)
         }
@@ -169,7 +169,7 @@ async fn create_document(
     );
     let image = image_reader
         .decode()
-        .map_err(|err| AppError::DecodingFailure(err))?;
+        .map_err(AppError::DecodingFailure)?;
 
     let result: Result<DynamicImage, AppError> = payload
         .layers
