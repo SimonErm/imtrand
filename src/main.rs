@@ -55,11 +55,11 @@ impl IntoResponse for AppError {
         }
 
         let (status, message) = match self {
-            AppError::DecodingFailure(_) => (
+            AppError::DecodingFailure(err) => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 ErrorResponse {
                     title: "Decoding-Error".into(),
-                    details: "Failed to decode one of the overlays".into(),
+                    details: format!("Failed to decode one of the overlays. {}", err),
                 },
             ),
             AppError::MissingMimeType => (
