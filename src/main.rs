@@ -10,7 +10,6 @@ use axum::{
 use axum_typed_multipart::{FieldData, TryFromMultipart, TypedMultipart};
 use imageproc::image::{
     codecs::jpeg::JpegEncoder,
-    error::EncodingError,
     imageops::{overlay, FilterType},
     DynamicImage, ImageError, ImageFormat, ImageReader,
 };
@@ -40,7 +39,6 @@ enum AppError {
     EncodingFailure,
     SvgParserFailure,
     InvalidSize,
-    RenderFailure(EncodingError),
 }
 
 impl IntoResponse for AppError {
@@ -97,13 +95,6 @@ impl IntoResponse for AppError {
                 ErrorResponse {
                     title: "Transform-Error".into(),
                     details: "The image or overlay has an invalid size".into(),
-                },
-            ),
-            AppError::RenderFailure(_) => (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                ErrorResponse {
-                    title: "Svg-Error".into(),
-                    details: "Failed to parse one of the svg-overlays".into(),
                 },
             ),
         };
