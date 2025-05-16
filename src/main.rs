@@ -10,7 +10,6 @@ use axum::{
 use axum_typed_multipart::{FieldData, TryFromMultipart, TypedMultipart};
 use imageproc::image::{
     codecs::jpeg::JpegEncoder,
-    error::EncodingError,
     imageops::{overlay, FilterType},
     DynamicImage, ImageError, ImageFormat, ImageReader,
 };
@@ -40,7 +39,6 @@ enum AppError {
     EncodingFailure,
     SvgParserFailure,
     InvalidSize,
-    RenderFailure(EncodingError),
 }
 
 impl IntoResponse for AppError {
@@ -57,11 +55,11 @@ impl IntoResponse for AppError {
         }
 
         let (status, message) = match self {
-            AppError::DecodingFailure(_) => (
+            AppError::DecodingFailure(err) => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 ErrorResponse {
                     title: "Decoding-Error".into(),
-                    details: "Failed to decode one of the overlays".into(),
+                    details: format!("Failed to decode one of the overlays. {}", err),
                 },
             ),
             AppError::MissingMimeType => (
@@ -99,13 +97,6 @@ impl IntoResponse for AppError {
                     details: "The image or overlay has an invalid size".into(),
                 },
             ),
-            AppError::RenderFailure(_) => (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                ErrorResponse {
-                    title: "Svg-Error".into(),
-                    details: "Failed to parse one of the svg-overlays".into(),
-                },
-            ),
         };
 
         (status, axum::Json(message)).into_response()
@@ -141,13 +132,13 @@ fn prepare_layers(
 
             let rgba = pixmap.encode_png().map_err(|_| AppError::EncodingFailure)?;
             let mut overlay_reader =
-                ImageReader::new(Cursor::new(Bytes::from_iter(rgba.into_iter())));
+                ImageReader::new(Cursor::new(Bytes::from_iter(rgba)));
             overlay_reader.set_format(ImageFormat::Png);
             let mut overlay_image = overlay_reader
                 .decode()
-                .map_err(|err| AppError::DecodingFailure(err))?;
+                .map_err(AppError::DecodingFailure)?;
             overlay_image = overlay_image.resize(image_witdh, image_height, FilterType::Nearest);
-            return Ok(overlay_image);
+            Ok(overlay_image)
         } else {
             let mut overlay_reader = ImageReader::new(Cursor::new(layer.contents.clone()));
             let mimetype = layer.metadata.content_type.as_ref();
@@ -158,9 +149,9 @@ fn prepare_layers(
             );
             let mut overlay_image = overlay_reader
                 .decode()
-                .map_err(|err| AppError::DecodingFailure(err))?;
+                .map_err(AppError::DecodingFailure)?;
             overlay_image = overlay_image.resize(image_witdh, image_height, FilterType::Nearest);
-            return Ok(overlay_image);
+            Ok(overlay_image)
         }
     }
 }
@@ -178,7 +169,7 @@ async fn create_document(
     );
     let image = image_reader
         .decode()
-        .map_err(|err| AppError::DecodingFailure(err))?;
+        .map_err(AppError::DecodingFailure)?;
 
     let result: Result<DynamicImage, AppError> = payload
         .layers
@@ -186,7 +177,7 @@ async fn create_document(
         .map(prepare_layers(image.width(), image.height()))
         .try_fold(image.clone(), |mut acc, layer| {
             overlay(&mut acc, &layer?, 0, 0);
-            return Ok(acc);
+            Ok(acc)
         });
 
     let mut default = vec![];
@@ -197,5 +188,5 @@ async fn create_document(
 
     let mut headers = HeaderMap::new();
     headers.insert("Content-Type", "image/jpeg".parse().unwrap());
-    return Ok((headers, default));
+    Ok((headers, default))
 }
