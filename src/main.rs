@@ -138,7 +138,7 @@ fn prepare_layers(
                 .decode()
                 .map_err(|err| AppError::DecodingFailure(err))?;
             overlay_image = overlay_image.resize(image_witdh, image_height, FilterType::Nearest);
-            return Ok(overlay_image);
+            Ok(overlay_image)
         } else {
             let mut overlay_reader = ImageReader::new(Cursor::new(layer.contents.clone()));
             let mimetype = layer.metadata.content_type.as_ref();
@@ -151,7 +151,7 @@ fn prepare_layers(
                 .decode()
                 .map_err(|err| AppError::DecodingFailure(err))?;
             overlay_image = overlay_image.resize(image_witdh, image_height, FilterType::Nearest);
-            return Ok(overlay_image);
+            Ok(overlay_image)
         }
     }
 }
@@ -177,7 +177,7 @@ async fn create_document(
         .map(prepare_layers(image.width(), image.height()))
         .try_fold(image.clone(), |mut acc, layer| {
             overlay(&mut acc, &layer?, 0, 0);
-            return Ok(acc);
+            Ok(acc)
         });
 
     let mut default = vec![];
@@ -188,5 +188,5 @@ async fn create_document(
 
     let mut headers = HeaderMap::new();
     headers.insert("Content-Type", "image/jpeg".parse().unwrap());
-    return Ok((headers, default));
+    Ok((headers, default))
 }
