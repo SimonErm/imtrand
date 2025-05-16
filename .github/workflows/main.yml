@@ -63,6 +63,6 @@ jobs:
         run: |
          pack build ghcr.io/simonerm/imtrand:next \
          --buildpack paketo-community/rust \
-         --builder paketobuildpacks/builder-jammy-base:latest \
+         --builder paketobuildpacks/builder-jammy-buildpackless-base:latest \
          --cache-image ghcr.io/simonerm/imtrand-cache:next \
          --publish
