@@ -132,7 +132,7 @@ fn prepare_layers(
 
             let rgba = pixmap.encode_png().map_err(|_| AppError::EncodingFailure)?;
             let mut overlay_reader =
-                ImageReader::new(Cursor::new(Bytes::from_iter(rgba.into_iter())));
+                ImageReader::new(Cursor::new(Bytes::from_iter(rgba)));
             overlay_reader.set_format(ImageFormat::Png);
             let mut overlay_image = overlay_reader
                 .decode()
