@@ -224,7 +224,7 @@ mod tests {
         });
 
         // Call the handler directly
-        let response = create_document(input).await.unwrap();
+        create_document(input).await.unwrap();
         // Assert on the response
         // Additional assertions...
     }
