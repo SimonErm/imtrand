@@ -32,6 +32,7 @@ async fn main() {
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
+#[derive(Debug)]
 enum AppError {
     MissingMimeType,
     InvalidMimeType(String),
@@ -189,4 +190,42 @@ async fn create_document(
     let mut headers = HeaderMap::new();
     headers.insert("Content-Type", "image/jpeg".parse().unwrap());
     Ok((headers, default))
+}
+
+#[cfg(test)]
+mod tests {
+    use axum_typed_multipart::FieldMetadata;
+
+    use super::*;
+
+    #[tokio::test]
+    #[should_panic]
+    async fn test_create_document() {
+        // Create the inputs your handler expects
+        let input: TypedMultipart<TransformRequest> = TypedMultipart(TransformRequest {
+            image: FieldData {
+                metadata: FieldMetadata {
+                    name: Some("test".to_string()),
+                    file_name: Some("test".to_string()),
+                    content_type: Some("test".to_string()),
+                    headers: HeaderMap::new(),
+                },
+                contents: Bytes::new(),
+            },
+            layers: vec![FieldData {
+                metadata: FieldMetadata {
+                    name: Some("test".to_string()),
+                    file_name: Some("test".to_string()),
+                    content_type: Some("test".to_string()),
+                    headers: HeaderMap::new(),
+                },
+                contents: Bytes::new(),
+            }],
+        });
+
+        // Call the handler directly
+        let response = create_document(input).await.unwrap();
+        // Assert on the response
+        // Additional assertions...
+    }
 }
