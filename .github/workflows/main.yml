@@ -33,10 +33,6 @@ jobs:
     steps:
       - id: checkout
         uses: actions/checkout@v4
-      - name: Setup test coverage env
-        run: |
-          cargo install grcov
-          rustup component add llvm-tools
       - name: Cache
         uses: actions/cache@v4
         with:
@@ -47,6 +43,10 @@ jobs:
             ~/.cargo/git/db/
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - name: Setup test coverage env
+        run: |
+          cargo install grcov
+          rustup component add llvm-tools
       - run: cargo test --locked
         env:
           LLVM_PROFILE_FILE: target/debug/coverage/grcov-%p-%m.profraw
