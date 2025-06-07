@@ -7,7 +7,7 @@ on:
     branches: [main]
   workflow_dispatch:
 
-concurrency: 
+concurrency:
   group: ${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
@@ -21,11 +21,11 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-           ~/.cargo/bin/
-           ~/.cargo/registry/index/
-           ~/.cargo/registry/cache/
-           ~/.cargo/git/db/
-           target/
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - run: cargo clippy --all-targets --all-features -- -D warnings
   run-tests:
@@ -33,17 +33,36 @@ jobs:
     steps:
       - id: checkout
         uses: actions/checkout@v4
+      - name: Setup test coverage env
+        run: |
+          cargo install grcov
+          rustup component add llvm-tools
       - name: Cache
         uses: actions/cache@v4
         with:
           path: |
-           ~/.cargo/bin/
-           ~/.cargo/registry/index/
-           ~/.cargo/registry/cache/
-           ~/.cargo/git/db/
-           target/
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - run: cargo test --locked
+        env:
+          LLVM_PROFILE_FILE=: target/debug/coverage/grcov-%p-%m.profraw
+          RUSTFLAGS: -Cinstrument-coverage
+      - name: Generate coverage
+        run: |
+          grcov target/debug/coverage/grcov-*.profraw \
+            --branch \
+            --ignore-not-existing \
+            --binary-path ./target/debug/ \
+            --source-dir ./src \
+            --output-types cobertura,markdown \
+            --ignore "/*" \
+            --output-path ./target/debug/coverage/
+      - name: Set summary
+        run: cat ./target/debug/coverage/markdown.md >> $GITHUB_STEP_SUMMARY
   build-container:
     permissions:
       packages: write
@@ -61,8 +80,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - id: build-image
         run: |
-         pack build ghcr.io/simonerm/imtrand:next \
-         --buildpack paketo-community/rust \
-         --builder paketobuildpacks/builder-jammy-buildpackless-base:latest \
-         --cache-image ghcr.io/simonerm/imtrand-cache:next \
-         --publish
+          pack build ghcr.io/simonerm/imtrand:next \
+          --buildpack paketo-community/rust \
+          --builder paketobuildpacks/builder-jammy-buildpackless-base:latest \
+          --cache-image ghcr.io/simonerm/imtrand-cache:next \
+          --publish
