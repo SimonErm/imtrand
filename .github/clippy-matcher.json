@@ -1,0 +1,21 @@
+{
+    "owner":"clippy",
+    "problemMatcher": [
+        {
+            "owner": "cargo-clippy",
+            "pattern": [
+                {
+                    "regexp": "^(error|warning|info|Error|Warning|Info): (.*)$",
+                    "severity": 1,
+                    "message": 2
+                },
+                {
+                    "regexp": "^\\s+--> (.*):(\\d+):(\\d+)$",
+                    "file": 1,
+                    "line": 2,
+                    "column":3
+                }
+            ]
+        }
+    ]
+}
