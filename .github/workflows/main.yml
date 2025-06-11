@@ -27,6 +27,7 @@ jobs:
             ~/.cargo/git/db/
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - run: echo "::add-matcher::.github/clippy-matcher.json"
       - run: cargo clippy --all-targets --all-features -- -D warnings
   run-tests:
     runs-on: ubuntu-latest
