@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Cache
         uses: actions/cache@v4
         with:
@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Cache
         uses: actions/cache@v4
         with:
@@ -70,7 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - id: setup-pack
         uses: buildpacks/github-actions/setup-pack@v5.9.4
       - name: Log in to the Container registry
