@@ -6,7 +6,7 @@ edition = "2021"
 [dependencies]
 axum = { version = "0.8", features = ["multipart"] }
 tokio={version="1.47", features = ["full"] }
-imageproc="0.25"
+imageproc="0.26"
 resvg="0.45"
 axum_typed_multipart = "0.16.4"
 serde = { version = "1.0", features = ["derive"] }
