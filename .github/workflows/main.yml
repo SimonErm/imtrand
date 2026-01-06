@@ -86,6 +86,7 @@ jobs:
         run: |
           pack build ghcr.io/simonerm/imtrand:next \
           --buildpack paketo-community/rust \
-          --builder paketobuildpacks/builder-jammy-buildpackless-base:latest \
+          --trust-builder \
+          --builder paketobuildpacks/builder-jammy-buildpackless-static:latest \
           --cache-image ghcr.io/simonerm/imtrand-cache:next \
           --publish
