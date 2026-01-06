@@ -44,9 +44,12 @@ jobs:
             ~/.cargo/git/db/
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-      - name: Setup test coverage env
+      - name: Setup grcov
+        uses: taiki-e/install-action@v2
+        with:
+          tool: grcov
+      - name: Setup llvm-tools
         run: |
-          cargo install grcov
           rustup component add llvm-tools
       - run: cargo test --locked
         env:
