@@ -88,7 +88,7 @@ jobs:
           --buildpack paketo-community/rust \
           --creation-time=now \
           --trust-builder \
-          --trust-extra-buiildpacks \
+           --trust-extra-buildpacks \
           --builder paketobuildpacks/builder-jammy-buildpackless-static:latest \
           --cache-image ghcr.io/simonerm/imtrand-cache:next \
           --publish
