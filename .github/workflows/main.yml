@@ -75,7 +75,7 @@ jobs:
       - id: checkout
         uses: actions/checkout@v6
       - id: setup-pack
-        uses: buildpacks/github-actions/setup-pack@v5.10.0
+        uses: buildpacks/github-actions/setup-pack@v5.10.1
       - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
